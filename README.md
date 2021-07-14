@@ -4,9 +4,9 @@ Testing self-contained scripts
 
 ```sh
 # 1.Download script
-wget https://raw.githubusercontent.com/akikuno/self-contained-shellscript/main/selfcomtained
+wget https://raw.githubusercontent.com/akikuno/self-contained-shellscript/main/selfcontained
 # 2.Add execute permission
-chmod +x selfcomtained
+chmod +x selfcontained
 # 3.call `documents/help.md`
-./selfcomtained -h
+./selfcontained -h
 ```
