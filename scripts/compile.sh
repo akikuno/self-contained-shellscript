@@ -14,28 +14,31 @@ find ./ -type d |
   sed "s|./|/tmp/|" |
   xargs mkdir
 
-echo '#!/bin/sh' >selfcomtainedsh
+echo '#!/bin/sh' >selfcomtained
 
 : 'Export documents' && {
   find documents/*.md |
     embed_document |
     grep -v '```'
-} >>selfcomtainedsh
+} >>selfcomtained
 
 : 'Export scripts' && {
   find scripts/* |
     embed_document
-} >>selfcomtainedsh
+} >>selfcomtained
 
 : 'main' && {
-  echo 'ARGS="$*" && export ARGS' >>selfcomtainedsh
+  echo 'ARGS="$*" && export ARGS' >>selfcomtained
   find scripts/ -type f |
     grep -v "compile" |
-    sed "s|^|. /tmp/|" >>selfcomtainedsh
+    sed "s|^|. /tmp/|" >>selfcomtained
 }
 
-chmod +x selfcomtainedsh
+: 'cleanup' && {
+  echo 'rm -rf /tmp/documents /tmp/scripts/' >>selfcomtained
+}
+chmod +x selfcomtained
 
-./selfcomtainedsh -h
+./selfcomtained -h
 
 rm /tmp/tmp_*
