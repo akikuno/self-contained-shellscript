@@ -9,12 +9,14 @@ embed_document() {
   done
 }
 
-find ./ -type d |
-  grep -e "documents" -e "scripts" |
-  sed "s|./|/tmp/|" |
-  xargs mkdir
-
 echo '#!/bin/sh' >selfcontained
+echo 'set -ue' >>selfcontained
+
+: 'Create directories' && {
+  find ./ -type d |
+    grep -e "documents" -e "scripts" |
+    sed "s|./|mkdir -p /tmp/|"
+} >>selfcontained
 
 : 'Export documents' && {
   find documents/*.md |

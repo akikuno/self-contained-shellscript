@@ -6,8 +6,10 @@ export LC_ALL=C
 
 set -- $ARGS
 
-[ "$#" -eq 0 ] && grep -v '```' /tmp/documents/help.md && exit 0
-
-[ "_$1" = "_-h" ] && grep -v '```' /tmp/documents/help.md && exit 0
-
-echo "Unrecognized option: $1" && exit 1
+if [ "$#" -eq 0 ]; then
+  grep -v '```' /tmp/documents/help.md
+elif [ "_$1" = "_-h" ]; then
+  grep -v '```' /tmp/documents/help.md
+else
+  echo "Unrecognized option: $1" && exit 1
+fi

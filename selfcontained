@@ -1,4 +1,7 @@
 #!/bin/sh
+set -ue
+mkdir -p /tmp/documents
+mkdir -p /tmp/scripts
 cat <<'EMBED' >/tmp/documents/help.md
 ###########################
 help: self-contained shellscripts
@@ -18,12 +21,14 @@ embed_document() {
   done
 }
 
-find ./ -type d |
-  grep -e "documents" -e "scripts" |
-  sed "s|./|/tmp/|" |
-  xargs mkdir
-
 echo '#!/bin/sh' >selfcontained
+echo 'set -ue' >>selfcontained
+
+: 'Create directories' && {
+  find ./ -type d |
+    grep -e "documents" -e "scripts" |
+    sed "s|./|mkdir -p /tmp/|"
+} >>selfcontained
 
 : 'Export documents' && {
   find documents/*.md |
@@ -61,11 +66,13 @@ export LC_ALL=C
 
 set -- $ARGS
 
-[ "$#" -eq 0 ] && grep -v '```' /tmp/documents/help.md && exit 0
-
-[ "_$1" = "_-h" ] && grep -v '```' /tmp/documents/help.md && exit 0
-
-echo "Unrecognized option: $1" && exit 1
+if [ "$#" -eq 0 ]; then
+  grep -v '```' /tmp/documents/help.md
+elif [ "_$1" = "_-h" ]; then
+  grep -v '```' /tmp/documents/help.md
+else
+  echo "Unrecognized option: $1" && exit 1
+fi
 EMBED
 ARGS="$*" && export ARGS
 . /tmp/scripts/help.sh
